@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memoization</title>
+</head>
+<body>
+    
+
+    <script>
+        function memoize(fn){
+            let cache = {};
+
+            return function(...args){
+             const key = JSON.stringify(args);
+             if(cache[key] !== undefined){
+                return cache[key];
+             }
+
+             const result = fn(...args);
+             cache[key] = result;
+             return result;
+            }
+        }
+
+        function square(n){
+            console.log("Heavy load...")
+            console.log(null !== undefined);
+            return n * n;
+        }
+
+        const memoizeSquare = memoize(square);
+        console.log(memoizeSquare(5));
+        console.log(memoizeSquare(5));
+        console.log(memoizeSquare(10));
+    </script>
+</body>
+</html>
