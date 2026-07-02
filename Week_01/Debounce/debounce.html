@@ -33,6 +33,7 @@
             let timer;
 
             return function(...args){
+                console.log(`Timer:${timer}`);
                 if(timer){
                     clearTimeout(timer);
                 }

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Throttle</title>
+  </head>
+  <body>
+    <h1>Search Example</h1>
+    <p>Type in the box bellow:</p>
+    <input type="text" id="searchbox" placeholder="Type someting...." />
+    <div id="result">Type to see throttle action.</div>
+
+    <p>Search attempts: <span id="count">0</span></p>
+
+    <script>
+      /*
+        - Ensure the function runs at most once every X miliseconds
+
+        */
+
+      function throttle(fn, delay) {
+        let lastrun = 0;
+
+        return function (...args) {
+          const now = Date.now();
+          if (now - lastrun >= delay) {
+            fn(...args);
+            lastrun = now;
+          }
+        };
+      }
+
+      let searchCount = 0; // Counter
+
+      function doSearch(text) {
+        searchCount++; // Increase count
+        document.getElementById("count").textContent = searchCount; // Show count
+
+        const resultDiv = document.getElementById("result");
+
+        if (text.length === 0) {
+          resultDiv.innerHTML = "💡 Type something to search...";
+          return;
+        }
+
+        
+        resultDiv.innerHTML = " Searching for: <strong>" + text + "</strong>";
+
+        // Show results after 2 seconds
+         resultDiv.innerHTML = " Results for: <strong>" + text + "</strong>";
+      }
+
+      const throttleSearch = throttle(doSearch, 2000);
+
+      document
+        .getElementById("searchbox")
+        .addEventListener("input", function (e) {
+          const text = e.target.value;
+          throttleSearch(text);
+        });
+    </script>
+  </body>
+</html>
