@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nested Scope Visualizer</title>
+</head>
+<style>
+     * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    .container{
+        display: block;
+        justify-content: center;
+        align-items: center;
+    }
+
+</style>
+
+<body>
+
+    <div class="container">
+        <h1 class="heading">Nested Scope Visualizer</h1>
+        <p class="para">Open the browser console to see how JavaScript searches variables.</p>
+        <button class="example-btn" id="run1">Run Example 1</button>
+        <button class="example-btn" id="run2">Run Example 2</button>
+        <button id="clear">Clear console</button>
+    </div>
+    
+
+   
+    <script>
+         const exampleButtons = document.querySelectorAll(".example-btn");
+         
+         exampleButtons.forEach((btn, index)=>{
+            btn.addEventListener('click', ()=>{
+              console.log(`Button ${index + 1} clicked`);
+
+              if (index === 0) {
+                    outer();
+                }
+            });
+         });
+         
+        const clearButton = document.getElementById('clear');
+
+        function outer(){
+                function middle(){
+                    function inner(){
+
+                    }
+                    inner();
+                }
+                middle();
+              }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debounce</title>
+</head>
+<body>
+
+    <h1>Search Example</h1>
+    <p>Type in the box bellow:</p>
+    <input type="text" id="searchbox" placeholder="Type someting....">
+    <div id="result">
+        Type to see debounce action.
+    </div>
+
+    <p>Search attempts: <span id="count">0</span></p>
+    
+    <script>
+        /*
+        Debounce says: wait until the user pauses, then do the work.
+        - Debounce create the timer.
+        - every time the function called, its reset the timer.
+        - The actually work happen when the timer completes without being resets.
+
+        Trade-offs:
+          - Good: Reduces unnecessary work. Saves server load, battery and bandwidth.
+          - Bad: Introduce delay; user might feel a slight lag between their action and reponse.
+
+        */
+
+         function debounce(fn, delay){
+            let timer;
+
+            return function(...args){
+                if(timer){
+                    clearTimeout(timer);
+                }
+
+              timer = setTimeout(()=>{
+                    fn(...args);
+                }, delay);
+            }
+         }
+
+
+         // counter to show how many times search
+         let serachCount = 0;
+
+         function doSearch(text){
+            serachCount++;
+            document.getElementById("count").textContent = serachCount;
+
+            const resultDiv = document.getElementById("result");
+            if(serachCount === 0){
+                resultDiv.innerHTML ="Type something";
+                return;
+            }
+
+            resultDiv.innerHTML = ' Searching for: <strong>' + text + '</strong>';
+
+            setTimeout(() => {
+                resultDiv.innerHTML = ' Results for: <strong>' + text + '</strong>';
+            }, 2000);
+         }
+
+         const deBounceSearch = debounce(doSearch, 2000);
+
+         document.getElementById("searchbox").addEventListener('input', function(e){
+            const text = e.target.value;
+            deBounceSearch(text);
+         });
+    </script>
+</body>
+</html>
