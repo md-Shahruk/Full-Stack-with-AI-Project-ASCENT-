@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Pattern</title>
+</head>
+<body>
+    
+    <script>
+        /*
+        - Module pattern creates encapsulation.
+            Hide implementation.
+            Prevent invalid state.
+            Expose a clean API.
+            Improve maintainability.
+            Reduce coupling.
+        */
+
+        function modulePattern(){
+            let tasks = [];
+            //let tasks = {};
+            let taskId = 0;
+
+            return{
+            addTask: function(task){
+              taskId ++;
+                const newTask = {
+                id: taskId,
+                task: task,
+                createdAt: new Date().toISOString(),
+                status: 'pending'
+              };
+              //console.log("TAsk added");
+              tasks.push(newTask);
+              return newTask; 
+              
+            },
+
+            getTask:function(id){
+                return tasks.find(task => task.id === id);
+
+            },
+            updateTask: function(id, task){
+                const findTask = this.getTask(id);
+                if(findTask){
+                    findTask.status = task;
+                    return findTask;
+                }
+                return null;
+            },
+            deleteTask:function(id){
+               const intialLen = tasks.length;
+               tasks = tasks.filter(task => task.id !== id);
+               return tasks.length < intialLen;
+            },
+            getTaskCount:function(){
+             return tasks.length;
+            },
+            getAllTasks:function(){
+                return [...tasks];
+            }
+            };
+
+            
+        }
+
+        const manager = modulePattern();
+
+        // Tasks add 
+        const task1 = manager.addTask("Complete project");
+        const task2 = manager.addTask("Write documentation");
+        const task3 = manager.addTask("Review code");
+
+        console.log(manager.getTaskCount());
+        console.log(manager.getTask(1));
+        console.log(manager.deleteTask(2));
+        console.log(manager.getTaskCount());
+        manager.updateTask(1, 'Updated Task');
+        console.log(manager.getTask(1));
+        console.log(manager.getAllTasks());
+
+
+    </script>
+</body>
+</html>
