@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ascent TaskStore</title>
+</head>
+<body>
+    
+    <script>
+       function createTaskStore() {
+            const tasks = [];
+            let taskId = 0;
+
+            return {
+                addTask: function(title, description) {
+                    taskId++;
+                    const newTask = {
+                        id: taskId,
+                        title: title,
+                        description: description,
+                        status: 'pending',
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                    };
+                    tasks.push(newTask);
+                    console.log(" Task added:", title);
+                    return newTask;
+                },
+
+                getTask: function(id) {
+                    return tasks.find(task => task.id === id);
+                },
+
+                getAllTasks: function() {
+                    return [...tasks];
+                },
+
+                updateTask: function(id, updateData) {
+                    const task = this.getTask(id);
+                    if (!task) {
+                        
+                        return null;
+                    }
+
+                    const allowedUpdates = ['title', 'description', 'status'];
+
+                    for (const key in updateData) {
+                        if (allowedUpdates.includes(key)) {
+                            task[key] = updateData[key];
+                        }
+                    }
+
+                    
+                    task.updatedAt = new Date().toISOString();  
+                  
+                    return task;
+                },
+                /* 
+                deleteTask: function(id){
+                    const initialLen = tasks.length;
+                    tasks = tasks.filter(task => task.id !== id);
+                    return tasks.length < initialLen;
+                }, */
+                deleteTask: function(id){
+                    const index = tasks.findIndex(task => task.id === id);
+                    if(index !== -1){
+                        tasks.splice(index, 1);
+                    }
+                },
+
+                getTasksByStatus: function(status){
+                  return tasks.filter(task => task.status === status);
+                },
+                completeTask: function(id) {
+                  return this.updateTask(id, { status: "completed" });
+                },
+                getTaskCount:function(){
+                    return tasks.length;
+                },
+
+                
+            };
+        }
+
+        
+        const store = createTaskStore();  
+
+    
+        store.addTask("Task 1", "Description 1");
+        store.addTask("Task 2", "Description 2");
+        store.addTask("Task 3", "Description 3");
+
+        store.updateTask(2, { status: "pending" });
+        store.updateTask(3, { status: "in-progress" });
+
+        
+        console.log("Pending tasks:", store.getTasksByStatus("pending"));
+        
+        console.log("In-progress tasks:", store.getTasksByStatus("in-progress"));
+        store.deleteTask(2);
+        console.log("Total task", store.getAllTasks());
+                
+    
+    </script>
+</body>
+</html>
