@@ -66,7 +66,9 @@
                     const index = tasks.findIndex(task => task.id === id);
                     if(index !== -1){
                         tasks.splice(index, 1);
+                        return true;
                     }
+                    return false;
                 },
 
                 getTasksByStatus: function(status){
@@ -83,7 +85,7 @@
             };
         }
 
-        
+        /*
         const store = createTaskStore();  
 
     
@@ -101,7 +103,7 @@
         store.deleteTask(2);
         console.log("Total task", store.getAllTasks());
                 
-    
+       */ 
     </script>
 </body>
 </html>
