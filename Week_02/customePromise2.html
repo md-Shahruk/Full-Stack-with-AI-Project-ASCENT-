@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Promise 2</title>
+</head>
+<body>
+    
+    <script>
+        /*
+         solve: async setTimeOut()
+         solve: multiple then() support
+         solve: pending state handle
+         solve: then chain error handling
+        */
+
+        class CustomPromise{
+            constructor(executor){
+                this.status = 'pending';
+                this.value = undefined;
+                this.reason = undefined;
+                
+                //array for callback store
+                this.OnfulfilledCallBacks = [];
+                this.OnRejectedCallBackes = [];
+
+                const resolve = (value)=>{
+                    if(this.status === 'pending'){
+                        this.status = 'fulfilled';
+                        this.value = value;
+                        this.OnfulfilledCallBacks.forEach(cb => cb(this.value));
+                    }
+                };
+
+                const reject = (reason)=>{
+                    if(this.status === 'pending'){
+                        this.status = 'rejected';
+                        this.reason = reason;
+                        this.OnRejectedCallBackes.forEach(cb => cb(this.reason));
+                    }
+                };
+
+                executor(resolve, reject);
+            }
+
+            then(OnFulfilled, OnRejected){
+            return new CustomPromise((resolve, reject)=>{
+
+                const handleFulfilled = ()=>{
+                    try{
+                        if(OnFulfilled){
+                            const result = OnFulfilled(this.value);
+                            resolve(result);
+                        }else{
+                            resolve(this.value)
+                        }
+                    }catch(error){
+                       reject(error);
+                    }
+                };
+
+                const handleReject = ()=>{
+                    try{
+                        if(OnRejected){
+                            const result = OnRejected(this.reason);
+                            resolve(result);
+                        }else{
+                            resolve(this.reason);
+                        }
+                    }catch(error){
+                        reject(error);
+                    }
+                };
+
+              if(this.status === 'fulfilled'){
+                handleFulfilled();
+              }else if(this.status === 'rejected'){
+                handleReject();
+              }else{
+               
+                if(OnFulfilled) this.OnfulfilledCallBacks.push(handleFulfilled);
+                if(OnRejected) this.OnRejectedCallBackes.push(handleReject);
+            }
+              
+
+            });
+            
+            ;
+         };
+        }
+         
+        // setTimeOut() error solve
+        const myPromise =  new CustomPromise((resolve, reject)=>{
+            setTimeout(()=>{
+                resolve(10);
+            },2000);
+        })
+
+        myPromise.then(value =>{
+           console.log('1st', value);
+           return value * 2;
+        }).then(value=>{
+            console.log('2nd',value);
+            return value + 5;
+        }).then(value =>{
+            console.log('3rd', value )
+        })
+    </script>
+</body>
+</html>
