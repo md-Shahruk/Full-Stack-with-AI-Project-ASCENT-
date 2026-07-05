@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Promise</title>
+</head>
+<body>
+
+    <script>
+        /*
+          Promise:
+            1. Pending
+            2. Fulfiled
+            3. Rejected
+
+        */
+         class CustomPromise{
+            
+            constructor(executor){
+            // which stat?
+            // if success then value?
+            // if reject then value?
+
+            this.status = 'pending';
+            this.value = undefined;
+            this.reason = undefined;
+
+            // create resolve function
+            const resolve = (value)=>{
+                if(this.status === 'pending'){
+                    this.status = 'fulfilled';
+                    this.value = value;
+                }
+            };
+
+            // create reject function
+            const reject = (reason)=>{
+                if(this.status === 'pending'){
+                    this.status = 'rejected';
+                    this.reason = reason;
+                }
+            };
+
+            executor(resolve, reject);
+            }
+
+         then(OnFulfilled, OnRejected){
+            if(this.status === 'fulfilled' && OnFulfilled){
+                OnFulfilled(this.value);
+            }
+            if(this.status === 'rejected' && OnRejected){  
+                OnRejected(this.reason);
+            }
+            return this;
+         };
+
+         catch(OnRejected){
+            return this.then(null, OnRejected);
+         }
+        
+         }
+    
+        
+        
+    </script>
+</body>
+</html>
