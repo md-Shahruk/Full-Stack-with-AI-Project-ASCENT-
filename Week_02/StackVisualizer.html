@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stack Visualizer</title>
+  </head>
+  <body>
+    <script>
+      let callstack = [];
+      function callstackVisualizer(){
+       if(callstack.length === 0){
+        return;
+       }else{
+         for(let i = callstack.length - 1; i >= 0; i --){
+            console.log(`${i + 1}. ${callstack[i]}`);
+         }
+       
+       }
+       console.log("----------------------------\n");
+      }
+
+      function pushOne(callback){
+        setTimeout(()=>{
+            callstack.push("PushOne()");
+            console.log("Pushed: One()");
+            callstackVisualizer();
+            if(callback) callback();
+        }, 1000);
+      }
+
+      function pushTwo(callback){
+        setTimeout(()=>{
+            callstack.push("PushTwo()");
+            console.log("Pushed: Two()");
+            callstackVisualizer();
+            if(callback) callback();
+        }, 1000);
+      }
+
+      function pushThree(callback){
+        setTimeout(()=>{
+            callstack.push("PushThree()");
+            console.log("Pushed: Three()");
+            callstackVisualizer();
+            if(callback) callback();
+        }, 1000);
+      }
+
+
+      function poppedOne(callback){
+        setTimeout(()=>{
+            if(callstack.length > 0){
+               
+                console.log(` Popped: ${callstack.pop()}`);
+                callstackVisualizer();
+                if(callback) callback();
+            }
+        },1000);
+
+      }
+      
+      function poppedTwo(callback){
+        setTimeout(()=>{
+            if(callstack.length > 0){
+                
+                console.log(` Popped: ${callstack.pop()}`);
+                callstackVisualizer();
+                if(callback) callback();
+            }
+        },1000);
+
+      }
+
+      function poppedThree(callback){
+        setTimeout(()=>{
+            if(callstack.length > 0){
+                
+                console.log(` Popped: ${callstack.pop()}`);
+                callstackVisualizer();
+                if(callback) callback();
+            }
+        },1000);
+
+      }
+
+      function callOne(callback){
+        setTimeout(()=>{
+            console.log("Calling one()");
+            pushOne(callback);
+        },1000);
+      }
+
+      function callTwo(callback){
+        setTimeout(()=>{
+            console.log("Calling Two()");
+            pushTwo(callback);
+        },1000);
+      }
+
+      function callThree(callback){
+        setTimeout(()=>{
+            console.log("Calling three()");
+            pushThree(callback);
+        },1000);
+      }
+
+    /// Lets do callback hell
+
+    callOne(()=>{
+        
+        callTwo(()=>{
+            
+            callThree(()=>{
+                console.log("Stack is full now popping");
+                setTimeout(()=>{
+                    poppedThree(()=>{
+                        poppedTwo(()=>{
+                           poppedOne(()=>{
+                                console.log("Done!....");
+                            })
+                        })
+                    })
+                     
+                },2000);
+            })
+        })
+    })
+
+    </script>
+  </body>
+</html>
