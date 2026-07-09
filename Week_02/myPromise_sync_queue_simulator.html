@@ -5,16 +5,152 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A custom implementation of Promise (MyPromise) and a Sync Queue simulator.</title>
 </head>
+
+<title>Sync Queue Simulator</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .task {
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        .waiting { background: #fff3cd; border-color: #ffc107; }
+        .syncing { background: #cce5ff; border-color: #007bff; }
+        .done { background: #d4edda; border-color: #28a745; }
+        .task-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .status {
+            font-size: 14px;
+            color: #666;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sync Queue Simulator</h1>
+        <div id="taskList"></div>
+        <button onclick="startQueue()">Start Queue</button>
+    </div>
 <body>
     
 
     <script>
-        // A custom implementation of Promise (MyPromise) and a Sync Queue simulator.
-        function callMyself(){
-            callMyself();
-            }
+      // Define tasks with delays
+const tasks = [
+    { id: 1, name: "Task 1", delay: 2000 },
+    { id: 2, name: "Task 2", delay: 3000 },
+    { id: 3, name: "Task 3", delay: 1500 }
+];
 
-            callMyself();
+let currentTaskIndex = 0;
+
+// Function to update task UI
+function updateTaskUI(taskId, status) {
+    const taskElement = document.getElementById(`task-${taskId}`);
+    if (!taskElement) return;
+    
+    // Remove all status classes
+    taskElement.classList.remove('waiting', 'syncing', 'done');
+    taskElement.classList.add(status);
+    
+    const statusText = taskElement.querySelector('.status');
+    const statusMessages = {
+        waiting: '⏳ Waiting...',
+        syncing: '🔄 Syncing...',
+        done: '✅ Done!'
+    };
+    statusText.textContent = statusMessages[status];
+}
+
+// Function to render tasks
+function renderTasks() {
+    const taskList = document.getElementById('taskList');
+    taskList.innerHTML = '';
+    
+    tasks.forEach(task => {
+        const div = document.createElement('div');
+        div.id = `task-${task.id}`;
+        div.className = 'task waiting';
+        div.innerHTML = `
+            <div class="task-title">${task.name}</div>
+            <div class="status">⏳ Waiting...</div>
+        `;
+        taskList.appendChild(div);
+    });
+}
+
+// Main queue function using Promises
+function processTask(task) {
+    return new Promise((resolve, reject) => {
+        // Update to syncing
+        updateTaskUI(task.id, 'syncing');
+        
+        // Simulate async operation
+        setTimeout(() => {
+            // 90% chance of success
+            if (Math.random() > 0.1) {
+                updateTaskUI(task.id, 'done');
+                resolve(`✅ ${task.name} completed`);
+            } else {
+                updateTaskUI(task.id, 'waiting');
+                reject(`❌ ${task.name} failed`);
+            }
+        }, task.delay);
+    });
+}
+
+// Start the queue with error handling
+async function startQueue() {
+    const startBtn = document.querySelector('button');
+    startBtn.disabled = true;
+    startBtn.textContent = 'Processing...';
+    
+    try {
+        for (let i = 0; i < tasks.length; i++) {
+            const task = tasks[i];
+            try {
+                const result = await processTask(task);
+                console.log(result);
+            } catch (error) {
+                console.error(error);
+                // Optional: retry logic here
+            }
+        }
+        console.log('🎉 All tasks processed!');
+    } catch (error) {
+        console.error('Queue error:', error);
+    } finally {
+        startBtn.disabled = false;
+        startBtn.textContent = 'Start Queue';
+    }
+}
+
+// Initialize
+renderTasks();
     </script>
 </body>
 </html>
