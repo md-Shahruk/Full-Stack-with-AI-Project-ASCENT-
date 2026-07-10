@@ -1,5 +1,6 @@
 # Topic will be covered:
 - Prototype Fundamentals
+- Understanding this
 
 
 
@@ -75,4 +76,119 @@
    - Call the constructor function with the new object:
      Dog.call(newObject, "Buddy");
    - return the object: return newObject
+```
+
+## `this` keyword 
+
+### Implicit Binding
+- When call a function using the `(.)dot` the object written before the dot becomes the value of `this` inside the function.
+
+```js
+   function greet(obj){
+    obj.message =  function(){
+        return `$(this.name) is (this.age) years old.`
+    }
+   }
+
+   const  tutol = {
+    name: 'Tutol',
+    age: 7
+   }
+
+   const Tony = {
+    name: 'Tony',
+    age: 12
+   }
+
+   greet(tutol);
+   greet(Tony);
+
+   tutol.message(); // here this is tutol
+   tony.message(); // here this is tony
+```
+
+### Explicit Binding
+- Hey, use THIS object as `this` - no matter how or where the function is called.
+- There are three very special methods, `call()`, `apply()`,`bind()` help us achive explicit binding.
+
+### `call()` Method
+- call() method of Function.prototype
+```js
+   functionName.call(thisArg, arg1, arg2, ...)
+   thisArg - The object want to be `this` inside the function.
+   arg1, arg2 - Optional arguments to pass to the function
+
+   const person1 = {
+    name: 'Shatil',
+    greet: function() {
+        console.log(`Hi, I'm ${this.name}`);
+        }
+    };
+
+    const person2 = { name: 'Shahruk' };
+
+    
+    person1.greet.call(person2);  // Output: Hi, I'm Shahruk
+
+    - person1.greet is a method, but using .call(person2), force this to be person2
+```
+
+### `apply()` Method
+- Work excatly like .call(), but with one different pass argument as an array insted of one by one.
+```js
+   function introduce(city, country) {
+        console.log(`${this.name} is from ${city}, ${country}`);
+    }
+
+    const person = { name: 'Shahruk' };
+
+    // Using .call() - arguments one by one
+    introduce.call(person, 'Dhaka', 'Bangladesh');
+
+    // Using .apply() - arguments as an array
+    introduce.apply(person, ['Dhaka', 'Bangladesh']);
+
+    // Both output: Shahruk is from Dhaka, Bangladesh
+```
+
+### `bind()` Method
+- `bind()` thats create a new Function where this is permnently set to the object, unlike call(), apply() it does not run the function immediately , its return a new function
+
+```js
+   const user = {
+    name: 'Shahruk'
+    };
+
+    function sayHello(city, country) {
+        console.log(`${this.name} lives in ${city}, ${country}`);
+    }
+
+    // Create a bound function
+    const boundSayHello = sayHello.bind(user);
+
+    // Call it with parameters
+    boundSayHello('Dhaka', 'Bangladesh');
+    // Output: Shahruk lives in Dhaka, Bangladesh  
+
+    // Call it with different parameters
+    boundSayHello('London', 'UK');
+    // Output: Shahruk lives in London, UK  
+```
+
+## `Arrow Functions` bindings
+- Arrow function do not have their own this, instead they inherit this from the surrounding parent scope where they are defined.
+- Arrow functions don't have their own this because they don't create a new execution (this binding) context for it
+```js
+    const user = {
+        name: 'Rahim',
+        regularGreet: function() {
+            console.log(this.name);  // 'this' = user object
+        },
+        arrowGreet: () => {
+            console.log(this.name);  // 'this' = outer scope 
+        }
+    };
+
+    user.regularGreet();  // Output: Rahim 
+    user.arrowGreet();    // Output: undefined  (Arrow function ignores user)
 ```
