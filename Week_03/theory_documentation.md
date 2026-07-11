@@ -1,6 +1,7 @@
 # Topic will be covered:
 - Prototype Fundamentals
 - Understanding this
+- Functional Programming
 
 
 
@@ -191,4 +192,62 @@
 
     user.regularGreet();  // Output: Rahim 
     user.arrowGreet();    // Output: undefined  (Arrow function ignores user)
+```
+
+## Functional Programming
+### Pure Functions & Side Effects
+- Instead of telling JS how to do something step by step, focus on one function that take input and return output - nothing else.
+- Same input always gives same output.
+- doesn't change anything outside itself
+- Pure function = same input → same output + no side effects. doesn't read from or write to anything outside itself.
+
+```js
+    function add(a,b){
+    return a + b;
+   }
+   add(2, 3); // always 5 no matter what
+```
+#### What is side effect?
+```js
+     
+    let total = 0;
+
+    // Impure modifies outside variable total
+    function addToTotal(n) {
+    total += n;
+    }
+
+    // Impure console.log is a side effect
+    function add(a, b) {
+    console.log("adding");
+    return a + b;
+    }
+
+    // Impure  depends on outside variable
+    let tax = 0.1;
+    function getPrice(price) {
+    return price + price * tax; // result changes if tax changes
+    }
+```
+### Immutability
+- Don't change existing data, create new data instead.
+```js
+    - mutation modifies the orginal array
+    const numbers = [1,2,3];
+    function addNumber(arr, num){
+        arr.push(num);
+        return arr;
+    }
+    addNumber(numbers, 5);
+    log(numbers) // 1,2,3,5 : orginal changed
+
+
+    - immutable array; leaves orginal array alone 
+    const numbers = [1,2,3];
+    function addNumber(arr, num){
+        return [...arr,num];
+    }
+    const newNumber = addNumber(numbers, 4);
+    log(numbers); // 1,2,3
+    log(addNumber); // 1,2,3,4 new array
 ```
